@@ -36,7 +36,6 @@ public class MemberService {
     }
 
     public Member createMember(Member member) {
-        System.out.println("111111111111111111111111111111111");
         verifyExistsEmail(member.getEmail());
         Member savedMember = memberRepository.save(member);
 
