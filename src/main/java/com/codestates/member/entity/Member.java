@@ -44,11 +44,6 @@ public class Member extends Auditable {
         this.email = email;
     }
 
-    public Member(String email, String name, String phone) {
-        this.email = email;
-        this.name = name;
-        this.phone = phone;
-    }
 
     public void setOrder(Order order) {
         orders.add(order);
