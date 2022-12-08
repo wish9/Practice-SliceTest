@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,7 +63,30 @@ public class MemberControllerHomeworkTest {
 
     @Test
     void getMemberTest() throws Exception {
-        // TODO MemberController의 getMember() 핸들러 메서드를 테스트하는 테스트 케이스를 여기에 작성하세요.
+        // given: MemberController의 getMember()를 테스트하기 위해서 postMember()를 이용해 테스트 데이터를 생성 후, DB에 저장
+        MemberDto.Post post = new MemberDto.Post("hgd@gmail.com","홍길동","010-1111-1111");
+        String postContent = gson.toJson(post);
+
+        ResultActions postActions =
+                mockMvc.perform(
+                        post("/v11/members")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(postContent)
+                );
+        long memberId;
+        String location = postActions.andReturn().getResponse().getHeader("Location"); // "/v11/members/1"
+        memberId = Long.parseLong(location.substring(location.lastIndexOf("/") + 1));
+
+        // when / then
+        mockMvc.perform(
+                        get("/v11/members/" + memberId)
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.email").value(post.getEmail()))
+                .andExpect(jsonPath("$.data.name").value(post.getName()))
+                .andExpect(jsonPath("$.data.phone").value(post.getPhone()));
     }
 
     @Test
