@@ -12,10 +12,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional
 @SpringBootTest
@@ -46,14 +47,9 @@ public class MemberControllerHomeworkTest {
                 );
 
         // then
-        MvcResult result = actions
+        actions
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.email").value(post.getEmail()))
-                .andExpect(jsonPath("$.data.name").value(post.getName()))
-                .andExpect(jsonPath("$.data.phone").value(post.getPhone()))
-                .andReturn();
-
-//        System.out.println(result.getResponse().getContentAsString());
+                .andExpect(header().string("Location", is(startsWith("/v11/members/"))));
     }
 
     @Test

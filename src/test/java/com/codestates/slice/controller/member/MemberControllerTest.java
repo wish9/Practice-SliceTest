@@ -8,15 +8,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+//    @WebMvcTest(controllers = MemberController.class)
+//    @MockBean(JpaMetamodelMappingContext.class)
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -26,6 +28,12 @@ class MemberControllerTest {
 
     @Autowired
     private Gson gson;
+
+//    @MockBean
+//    private MemberService memberService;
+
+//    @MockBean
+//    private MemberMapper mapper;
 
     @Test
     void postMemberTest() throws Exception {
@@ -46,11 +54,9 @@ class MemberControllerTest {
                                 );
 
         // then
-        MvcResult result = actions
-                                .andExpect(status().isCreated())
-                                .andReturn();
-
-        System.out.println(result.getResponse().getContentAsString());
+        actions
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", is(startsWith("/v11/members/"))));
     }
 
     @Test
