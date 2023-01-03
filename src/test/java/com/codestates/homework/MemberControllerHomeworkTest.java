@@ -66,8 +66,8 @@ public class MemberControllerHomeworkTest {
         ResultActions postActions =
                 mockMvc.perform(
                         post("/v11/members")
-                                .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON)
                                 .content(postContent)
                 );
         long memberId;
